@@ -26,6 +26,7 @@
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 
 <body>
@@ -48,6 +49,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('/main/rank') }}">Rank</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/main/raport') }}">Raport</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">

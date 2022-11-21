@@ -118,6 +118,57 @@ class DetaileventController extends Controller
         return view('data.harian', compact('harian', 'ulp_list', 'up3_name', 'target', 'realisasi', 'nama_ulp', 'ulp_exists'));
     }
 
+    public function showPotret(Request $request)
+    {
+
+        $filter = $request->all();
+
+        // dd($filter);    
+
+        $dataRank = $this->rankSaidi(@$filter['ulp'], @$filter['bulan'], @$filter['hari'], @$filter['tipe_gangguan'], @$filter['kategori'], @$filter['rayon']);
+
+        $dataHarian = $this->showHarian();
+
+        $ulp_exists = DB::table('ulp')
+            ->where('id', 1)
+            ->exists();
+
+        $ulp_list = $dataHarian['ulp_list'];
+        $harian = $dataHarian['harian'];
+
+        $fgtm = $dataRank['fgtm'];
+        $kum_gangguan = $dataRank['kum_gangguan'];
+        $rank_saidi = $dataRank['rank_saidi'];
+        $kum_penyulang = $dataRank['gg_penyulang'];
+        $n_gangguan = $dataRank['n_gangguan'];
+        $total_gangguan = $dataRank['total_gangguan'];
+        $tg_penyulang = $dataRank['tg_penyulang'];
+
+        $tipe_ggn = DB::select("SELECT tipe_gangguan FROM masterdata GROUP BY tipe_gangguan");
+        $kategori = DB::select("SELECT kategori FROM masterdata GROUP BY kategori");
+        $rayon = DB::select("SELECT rayon FROM masterdata GROUP BY rayon");
+
+        // dd($tipe_ggn);
+        return view(
+            'data.potret',
+            compact(
+                'ulp_exists',
+                'rank_saidi',
+                'kum_gangguan',
+                'fgtm',
+                'n_gangguan',
+                'total_gangguan',
+                'tg_penyulang',
+                'kum_penyulang',
+                'ulp_list',
+                'harian',
+                'tipe_ggn',
+                'kategori',
+                'rayon'
+            )
+        );
+    }
+
     public function showRank(Request $request)
     {
 

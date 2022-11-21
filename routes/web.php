@@ -9,6 +9,7 @@ use App\Http\Controllers\DetaileventController;
 use App\Http\Controllers\MasterdataController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\UlpController;
+use App\Http\Controllers\API\DetaileventsController;
 use App\Models\Masterdata;
 use Illuminate\Support\Facades\Auth;
 
@@ -55,8 +56,10 @@ Route::prefix('/user')->name('user.')->group(function () {
 // Route::get('/dash',  [DetaileventController::class, 'index']);
 Route::match(['get', 'post'], '/dash',  [DetaileventController::class, 'index'])->name('dashboard')->middleware('auth');
 Route::prefix('/main')->group(function () {
+    
     Route::match(['get', 'post'], '/realisasi',  [DetaileventController::class, 'chartHarian']);
     Route::match(['get', 'post'], '/rank',  [DetaileventController::class, 'showRank']);
+    Route::match(['get', 'post'], '/raport',  [DetaileventController::class, 'showPotret']);
     Route::match(['get', 'post'], '/kehandalan',  [KehandalanController::class, 'index']);
     Route::get('/rank/all',  [DetaileventController::class, 'delFilter']);
 });
@@ -71,6 +74,7 @@ Route::get('/ulp/edit/{id}', [UlpController::class, 'edit']);
 Route::put('/ulp/update/{id}', [UlpController::class, 'update']);
 // route untuk CRUD data ULP end
 // route untuk import file excel start
+
 Route::get('/detailEvent', [DetaileventController::class, 'showDash'])->middleware('auth');
 Route::post('/detailEvent/importExcel', [DetaileventController::class, 'importExcel']);
 Route::get('/detailEvent/realisasi',  [DetaileventController::class, 'chartHarian']);
