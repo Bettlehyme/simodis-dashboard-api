@@ -8,10 +8,12 @@ use App\Http\Requests\UpdateDetaileventRequest;
 use App\Imports\DetaileventImport;
 use App\Models\Masterdata;
 use App\Models\Ulp;
+use Hamcrest\Core\HasToString;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use function PHPUnit\Framework\isEmpty;
 
 class DetaileventController extends Controller
 {
@@ -114,8 +116,20 @@ class DetaileventController extends Controller
         $ulp_exists = DB::table('ulp')
             ->where('id', 1)
             ->exists();
+        $ulp_nama_filter = null;
+        if(isset($filter['ulp'])){
+            $ulp_nama_filter = $filter['ulp'];
+        }else{
+            $ulp_nama_filter = "UP3 PEKANBARU";
+        }
 
-        return view('data.harian', compact('harian', 'ulp_list', 'up3_name', 'target', 'realisasi', 'nama_ulp', 'ulp_exists'));
+        
+        $ulp_target1 = DB::table('ulp')
+            ->select('target1_ulp','target2_ulp')
+            ->where('nama_ulp', $ulp_nama_filter)
+            ->get();
+
+        return view('data.harian', compact('harian', 'ulp_list', 'up3_name', 'target', 'realisasi', 'nama_ulp', 'ulp_exists','ulp_target1'));
     }
 
     public function showPotret(Request $request)
@@ -137,6 +151,7 @@ class DetaileventController extends Controller
         $harian = $dataHarian['harian'];
 
         $fgtm = $dataRank['fgtm'];
+        $fgtm2 = $dataRank['fgtm2'];
         $kum_gangguan = $dataRank['kum_gangguan'];
         $rank_saidi = $dataRank['rank_saidi'];
         $kum_penyulang = $dataRank['gg_penyulang'];
@@ -156,6 +171,7 @@ class DetaileventController extends Controller
                 'rank_saidi',
                 'kum_gangguan',
                 'fgtm',
+                'fgtm2',
                 'n_gangguan',
                 'total_gangguan',
                 'tg_penyulang',
@@ -185,9 +201,11 @@ class DetaileventController extends Controller
             ->exists();
 
         $ulp_list = $dataHarian['ulp_list'];
+        $up3_name = $dataHarian['up3_name'];
         $harian = $dataHarian['harian'];
 
         $fgtm = $dataRank['fgtm'];
+
         $kum_gangguan = $dataRank['kum_gangguan'];
         $rank_saidi = $dataRank['rank_saidi'];
         $kum_penyulang = $dataRank['gg_penyulang'];
@@ -212,6 +230,7 @@ class DetaileventController extends Controller
                 'tg_penyulang',
                 'kum_penyulang',
                 'ulp_list',
+                'up3_name',
                 'harian',
                 'tipe_ggn',
                 'kategori',
@@ -225,6 +244,8 @@ class DetaileventController extends Controller
         $rank = [];
 
         $fgtm = DB::select("SELECT month(tgl_padam) as bulan,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata GROUP BY month(tgl_padam) ORDER BY month(tgl_padam) ASC");
+        $fgtm2 = DB::select("SELECT ulp, month(tgl_padam) as bulan,COUNT(SAIDI) as jml_gangguan FROM detailevents GROUP BY ulp ORDER BY month(tgl_padam) ASC");
+
 
         $kum_gangguan = "";
 
@@ -329,6 +350,7 @@ class DetaileventController extends Controller
         }
 
         $rank['fgtm'] = $fgtm;
+        $rank['fgtm2'] = $fgtm2;
         $rank['kum_gangguan'] = $kum_gangguan;
         $rank['rank_saidi'] = $rank_saidi;
         $rank['gg_penyulang'] = $kum_penyulang;

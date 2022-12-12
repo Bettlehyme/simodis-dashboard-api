@@ -3,8 +3,8 @@
 @section('content')
 
     @php
-
-    $jml_hr = cal_days_in_month(CAL_GREGORIAN, $harian['bulan'], 2021); //jumlah hari perbulan
+        
+        $jml_hr = cal_days_in_month(CAL_GREGORIAN, $harian['bulan'], 2021); //jumlah hari perbulan
     @endphp
 
     @if ($ulp_exists == false)
@@ -26,7 +26,7 @@
         <div class="container">
             <div class="page-heading mt-4">
                 <div class="text-center">
-                    <h2>Dashboard Kehandalan UP3 Pekanbaru Tahun 2021</h2>
+                    <h2>Dashboard Kehandalan UP3 Pekanbaru Tahun 2022</h2>
                     <h5>Monitoring Kinerja SAIDI SAIFI Harian UP3 Pekanbaru</h5>
                 </div>
             </div>
@@ -115,6 +115,7 @@
                                 </div>
                                 <div class="col-2 mt-4">
                                     <button class="btn btn-primary" type="submit">Refresh</button>
+                                    <a class="btn btn-danger" href="{{ url('/main/rank') }}"> Reset </a>
                                 </div>
                             </div>
                         </form>
@@ -124,7 +125,59 @@
 
             <section class="section">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-3">
+                        <div class="card" style="padding: 0px">
+                            <form method="POST" action="{{ url('/main/rank') }}">
+                                @csrf
+                                <div class="card-body">
+                                    <label style="margin-bottom: 10px">ULP</label>
+                                    <br>
+
+                                    @for ($i = 0; $i < count($ulp_list); $i++)
+                                        <button class="btn btn-primary" value="{{ $ulp_list[$i]->nama_ulp }}"
+                                            style="width:17vh; font-size:8pt; margin-bottom:5px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden">
+                                            {{ $ulp_list[$i]->nama_ulp }}
+                                        </button>
+                                        @php
+                                            if (($i + 1) / 2 == 0) {
+                                                echo '<br>';
+                                            } else {
+                                                echo '';
+                                            }
+                                        @endphp
+                                    @endfor
+
+                                    <button class="btn btn-primary" value="{{ $up3_name[0]->nama_ulp }}"
+                                        style="width:17vh; font-size:8pt; margin-bottom:5px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden">
+                                        {{ $up3_name[0]->nama_ulp }}
+                                    </button>
+                                    @php
+                                        if (($i + 1) / 2 == 0) {
+                                                echo '<br>';
+                                            } else {
+                                                echo '';
+                                            }
+                                    @endphp
+                                </div>
+                            </form>
+                            <form>
+
+                                <div class="card-body">
+                                    <label style="margin-bottom: 10px">Bulan</label>
+                                    <br>
+                                    @for ($i = 1; $i <= 12; $i++)
+                                        @php
+                                            $month_num = $i;
+                                            $month_name = date('F', mktime(0, 0, 0, $month_num, 10));
+                                        @endphp
+                                        <button class="btn btn-primary" value="{{ $i }}"
+                                            style="width:17vh; font-size:8pt; margin-bottom:5px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden">{{ $month_name }}</button>
+                                    @endfor
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
                         <div class="card">
                             <div class="card-body">
                                 <div id="rank"></div>
@@ -169,13 +222,13 @@
                 var x = document.getElementById("mySelect").value;
                 // document.getElementById("demo").innerHTML = "You selected: " + x;
             }
-
         </script>
 
         <script>
             Highcharts.chart('rank', {
                 chart: {
-                    type: 'column'
+                    type: 'column',
+                    height: '62%'
                 },
                 title: {
                     text: 'Realisasi SAIDI Perpenyulang'
@@ -192,7 +245,7 @@
                     crosshair: true,
                     labels: {
                         style: {
-                            fontSize: '8px'
+                            fontSize: '8px',
                         },
                         rotation: 270
                     }
@@ -228,7 +281,6 @@
 
                 }]
             });
-
         </script>
         <script>
             Highcharts.chart('kum-gangguan', {
@@ -270,7 +322,6 @@
                     })
                     .add();
             });
-
         </script>
         <script>
             Highcharts.chart('fgtm', {
@@ -287,29 +338,29 @@
                     categories: [
                         @foreach ($fgtm as $value)
                             <?php if ($value->bulan == 1) {
-                            echo "'Januari',";
+                                echo "'Januari',";
                             } elseif ($value->bulan == 2) {
-                            echo "'Februari',";
+                                echo "'Februari',";
                             } elseif ($value->bulan == 3) {
-                            echo "'Maret',";
+                                echo "'Maret',";
                             } elseif ($value->bulan == 4) {
-                            echo "'April',";
+                                echo "'April',";
                             } elseif ($value->bulan == 5) {
-                            echo "'Mei',";
+                                echo "'Mei',";
                             } elseif ($value->bulan == 6) {
-                            echo "'Juni',";
+                                echo "'Juni',";
                             } elseif ($value->bulan == 7) {
-                            echo "'Juli',";
+                                echo "'Juli',";
                             } elseif ($value->bulan == 8) {
-                            echo "'Agustus',";
+                                echo "'Agustus',";
                             } elseif ($value->bulan == 9) {
-                            echo "'September',";
+                                echo "'September',";
                             } elseif ($value->bulan == 10) {
-                            echo "'Oktober',";
+                                echo "'Oktober',";
                             } elseif ($value->bulan == 11) {
-                            echo "'November',";
+                                echo "'November',";
                             } elseif ($value->bulan == 12) {
-                            echo "'Desember',";
+                                echo "'Desember',";
                             } ?>
                         @endforeach
                     ],
@@ -347,7 +398,6 @@
 
                 }]
             });
-
         </script>
         <script>
             Highcharts.chart('n_penyulang', {
@@ -425,7 +475,6 @@
                     })
                     .add();
             });
-
         </script>
     @endif
 

@@ -23,6 +23,7 @@
 
     <!-- highcharts JS -->
     <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
@@ -40,8 +41,7 @@
 
             <div class="collapse navbar-collapse" id="navbar">
                 <a href="{{ url()->previous() }}"><i class="bi bi-chevron-left"></i></a>
-                <a class="navbar-brand ms-4 text-gray-800" href="#" style="font-size: 2rem">SI
-                    MODIS</a>
+                <a class="navbar-brand ms-4 text-gray-800" href="#" style="font-size: 2rem; margin-top:-10px; "><img src="{{asset('assets/images/logo/logo-simodis.png')}}"  style="width: 20vh; height:5vh" /></a>
 
                 <ul class="nav navbar-nav ms-4">
                     <li class="nav-item">

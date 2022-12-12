@@ -123,310 +123,65 @@
             </section>
 
             <section class="section">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div id="rank"></div>
+                <div class="row" id="table-responsive">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">SAIDI HARIAN</h4>
+                        </div>
+                        <div class="card-body">
+                            <!-- table responsive -->
+                            <div class="table-responsive">
+
+                                <table
+                                    class="table mb-0 table-hover table-bordered table-wrapper-scroll-y my-custom-scrollbar"
+                                    style="font-size: .55rem">
+                                    <thead class="table-light header">
+                                        <tr>
+
+                                            <th>No</th>
+                                            <th>Unit Layanan Pelanggan</th>
+                                            @for ($hari = 1; $hari <= 12; $hari++)
+                                                <th>{{ $hari }}</th>
+                                            @endfor
+
+                                            {{-- <th scope="col">#</th>
+                                        <th scope="col">Heading 1</th> --}}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $no = 0;
+                                        @endphp
+                                        @foreach ($fgtm2 as $row)
+                                            <tr>
+                                                <td>{{ ++$no }}</td>
+                                                <td class="text-bold-700">{{ $row->ulp }}</td>
+                                                @foreach ($fgtm2 as $data)
+                                                        <td class="table-success">{{ $data->jml_gangguan }}</td>
+                                                @endforeach
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    {{-- <tfoot>
+                                        <tr class="table-dark">
+                                            <td>{{ ++$no }}</td>
+                                            <td>{{ $saidi['up3']['nama_up3'][0]->nama_ulp }}</td>
+                                            @foreach ($saidi['up3']['data'] as $data)
+                                                <td>{{ $data }}</td>
+                                            @endforeach
+                                        </tr>
+                                    </tfoot> --}}
+                                </table>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </section>
-            <section class="section">
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="card">
-                            <div class="card-body">
-                                <div id="kum-gangguan"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <div id="fgtm"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <section class="section">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div id="n_penyulang"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            
         </div>
 
-        <script>
-            function onSelect() {
-                var x = document.getElementById("mySelect").value;
-                // document.getElementById("demo").innerHTML = "You selected: " + x;
-            }
 
-        </script>
-
-        <script>
-            Highcharts.chart('rank', {
-                chart: {
-                    type: 'column'
-                },
-                title: {
-                    text: 'Realisasi SAIDI Perpenyulang'
-                },
-                subtitle: {
-                    text: ''
-                },
-                xAxis: {
-                    categories: [
-                        @foreach ($rank_saidi as $value)
-                            '{{ $value->penyulang }}',
-                        @endforeach
-                    ],
-                    crosshair: true,
-                    labels: {
-                        style: {
-                            fontSize: '8px'
-                        },
-                        rotation: 270
-                    }
-                },
-                yAxis: {
-                    min: 0,
-                    title: {
-                        text: ''
-                    }
-                },
-                tooltip: {
-                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                        '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-                    footerFormat: '</table>',
-                    shared: true,
-                    useHTML: true
-                },
-                plotOptions: {
-                    column: {
-                        pointPadding: 0.2,
-                        borderWidth: 0,
-                        color: '#009933'
-                    }
-                },
-                series: [{
-                    name: 'Rank SAIDI',
-                    data: [
-                        @foreach ($rank_saidi as $value)
-                            {{ $value->ranksaidi }},
-                        @endforeach
-                    ]
-
-                }]
-            });
-
-        </script>
-        <script>
-            Highcharts.chart('kum-gangguan', {
-                title: {
-                    text: 'Komulatif Gangguan Bulanan'
-                },
-                xAxis: {
-                    categories: [
-                        @foreach ($kum_gangguan as $value)
-                            '{{ $value->rayon }}',
-                        @endforeach
-                    ]
-                },
-                series: [{
-                    type: 'column',
-                    name: 'Jumlah Gangguan',
-                    data: [
-                        {{ $n_gangguan }}
-                    ]
-                }]
-            }, function(chart) {
-                var text = chart.renderer.text(
-                        'Total Gangguan : {{ $total_gangguan }}',
-                        600,
-                        70
-                    ).attr({
-                        zIndex: 5
-                    }).add(),
-                    textBox = text.getBBox();
-
-                console.log(typeof chart.renderer);
-
-                chart.renderer.rect(textBox.x - 10, textBox.y - 5, textBox.width + 20, textBox.height + 10, 2)
-                    .attr({
-                        fill: '#BADA55',
-                        stroke: 'black',
-                        'stroke-width': 1,
-                        zIndex: 4
-                    })
-                    .add();
-            });
-
-        </script>
-        <script>
-            Highcharts.chart('fgtm', {
-                chart: {
-                    type: 'column'
-                },
-                title: {
-                    text: 'FGTM MoM UP3 PEKANBARU'
-                },
-                subtitle: {
-                    text: ''
-                },
-                xAxis: {
-                    categories: [
-                        @foreach ($fgtm as $value)
-                            <?php if ($value->bulan == 1) {
-                            echo "'Januari',";
-                            } elseif ($value->bulan == 2) {
-                            echo "'Februari',";
-                            } elseif ($value->bulan == 3) {
-                            echo "'Maret',";
-                            } elseif ($value->bulan == 4) {
-                            echo "'April',";
-                            } elseif ($value->bulan == 5) {
-                            echo "'Mei',";
-                            } elseif ($value->bulan == 6) {
-                            echo "'Juni',";
-                            } elseif ($value->bulan == 7) {
-                            echo "'Juli',";
-                            } elseif ($value->bulan == 8) {
-                            echo "'Agustus',";
-                            } elseif ($value->bulan == 9) {
-                            echo "'September',";
-                            } elseif ($value->bulan == 10) {
-                            echo "'Oktober',";
-                            } elseif ($value->bulan == 11) {
-                            echo "'November',";
-                            } elseif ($value->bulan == 12) {
-                            echo "'Desember',";
-                            } ?>
-                        @endforeach
-                    ],
-                    crosshair: true
-
-                },
-                yAxis: {
-                    min: 0,
-                    title: {
-                        text: ''
-                    }
-                },
-                tooltip: {
-                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                        '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-                    footerFormat: '</table>',
-                    shared: true,
-                    useHTML: true
-                },
-                plotOptions: {
-                    column: {
-                        pointPadding: 0.2,
-                        borderWidth: 0,
-                        color: '#ff4000'
-                    }
-                },
-                series: [{
-                    name: 'Jumlah Gangguan',
-                    data: [
-                        @foreach ($fgtm as $value)
-                            {{ $value->jml_gangguan }},
-                        @endforeach
-                    ]
-
-                }]
-            });
-
-        </script>
-        <script>
-            Highcharts.chart('n_penyulang', {
-                chart: {
-                    type: 'column'
-                },
-                title: {
-                    text: 'Gangguan Penyulang'
-                },
-                subtitle: {
-                    text: ''
-                },
-                xAxis: {
-                    categories: [
-                        @foreach ($kum_penyulang as $value)
-                            '{{ $value->penyulang }}',
-                        @endforeach
-                    ],
-                    crosshair: true,
-                    labels: {
-                        style: {
-                            fontSize: '9px'
-                        },
-                        rotation: 270
-                    }
-                },
-                yAxis: {
-                    min: 0,
-                    title: {
-                        text: ''
-                    }
-                },
-                tooltip: {
-                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                        '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-                    footerFormat: '</table>',
-                    shared: true,
-                    useHTML: true
-                },
-                plotOptions: {
-                    column: {
-                        pointPadding: 0.2,
-                        borderWidth: 0,
-                        color: '#000000'
-                    }
-                },
-                series: [{
-                    name: 'Jumlah Gangguan',
-                    data: [
-                        @foreach ($kum_penyulang as $value)
-                            {{ $value->kum_gangguan }},
-                        @endforeach
-                    ]
-
-                }]
-            }, function(chart) {
-                var text = chart.renderer.text(
-                        'Total Gangguan : {{ $tg_penyulang }}',
-                        900,
-                        70
-                    ).attr({
-                        zIndex: 5
-                    }).add(),
-                    textBox = text.getBBox();
-
-                console.log(typeof chart.renderer);
-
-                chart.renderer.rect(textBox.x - 10, textBox.y - 5, textBox.width + 20, textBox.height + 10, 2)
-                    .attr({
-                        fill: '#BADA55',
-                        stroke: 'black',
-                        'stroke-width': 1,
-                        zIndex: 4
-                    })
-                    .add();
-            });
-
-        </script>
     @endif
 
 @endsection

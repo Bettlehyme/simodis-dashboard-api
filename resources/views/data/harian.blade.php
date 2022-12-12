@@ -13,7 +13,7 @@
     <div class="container">
         <div class="page-heading mt-4">
             <div class="text-center">
-                <h2>Dashboard Kehandalan UP3 Pekanbaru Tahun 2021</h2>
+                <h2>Dashboard Kehandalan UP3 Pekanbaru Tahun 2022</h2>
                 <h5>Monitoring Kinerja SAIDI SAIFI Harian UP3 Pekanbaru</h5>
             </div>
         </div>
@@ -30,8 +30,18 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <fieldset class="form-group">
+                                            <label>Pilih Ulp</label>
                                             <select class="form-select" name="ulp" required>
-                                                <option disabled selected>Pilih ULP</option>
+                                                <option selected hidden>
+
+                                                    @php
+                                                        if (isset($_GET['ulp'])) {
+                                                            echo htmlspecialchars($_GET['ulp']);
+                                                        } else {
+                                                            echo 'UP3 PEKANBARU';
+                                                        }
+                                                    @endphp
+                                                </option>
                                                 @for ($i = 0; $i < count($ulp_list); $i++)
                                                     <option value="{{ $ulp_list[$i]->nama_ulp }}">
                                                         {{ $ulp_list[$i]->nama_ulp }}
@@ -49,9 +59,26 @@
                                     </div>
                                     <div class="col-md-2">
                                         <fieldset class="form-group">
+                                            <label> Pilih Bulan </label>
                                             <select class="form-select" id="basicSelect" name="bulan" required>
-                                                <option disabled="disabled" selected>Pilih Bulan
-                                                </option>
+                                                @php
+                                                    $month_num_selected = null;
+                                                    if (isset($_GET['bulan'])) {
+                                                        $month_num_selected = htmlspecialchars($_GET['bulan']);
+                                                    } else {
+                                                        $month_num_selected = 1;
+                                                    }
+                                                    $month_name_selected = date('F', mktime(0, 0, 0, $month_num_selected, 10));
+                                                @endphp
+                                                @php
+                                                    if (isset($_GET['bulan'])) {
+                                                        echo '<option value="' . htmlspecialchars($_GET['bulan']) . '" selected hidden>' . $month_name_selected . '</option>';
+                                                    } else {
+                                                        echo '<option value=" " selected hidden disable>January</option>';
+                                                    }
+                                                    
+                                                @endphp
+
                                                 @for ($i = 1; $i <= 12; $i++)
                                                     @php
                                                         $month_num = $i;
@@ -66,6 +93,7 @@
                                         </fieldset>
                                     </div>
                                     <div class="col-md-4">
+                                        <label style="margin-bottom: 6.2vh"></label>
                                         <button class="btn btn-primary" type="submit">Refresh</button>
                                     </div>
                                 </div>
@@ -79,28 +107,33 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="card">
-                            <div class="card-header">
-                                {{-- <h4 class="card-title">Monitoring SAIDI Harian</h4> --}}
-                            </div>
+                            {{-- <div class="card-header">
+                                <h4 class="card-title">Monitoring SAIDI Bulanan</h4>
+                            </div> --}}
                             <div class="card-body">
                                 <figure class="highcharts-figure">
-                                    <div id="saidiGauge"></div>
+                                    <div id="saidiBulgauge"></div>
                                 </figure>
+                                <figure class="highcharts-figure">
+                                    <div id="saidiKumgauge"></div>
+                                </figure>
+
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="card">
-                            <div class="card-header">
-                                {{-- <h4 class="card-title">Monitoring SAIFI Harian</h4> --}}
-                            </div>
                             <div class="card-body">
                                 <figure class="highcharts-figure">
-                                    <div id="saidiGauge"></div>
+                                    <div id="saifiBulgauge"></div>
+                                </figure>
+                                <figure class="highcharts-figure">
+                                    <div id="saifiKumgauge"></div>
                                 </figure>
                             </div>
                         </div>
                     </div>
+
                 </div>
                 {{-- ChartBar --}}
                 <div class="row">
@@ -496,9 +529,24 @@
                     }]
                 });
             </script>
-
+            {{-- Gauge Saidi --}}
             <script>
-                Highcharts.chart('saidiGauge', {
+                Highcharts.chart('saidiBulgauge', {
+                    {{ $saidiHarianValue = null }}
+                    {{ $saidiTargetValue = null }}
+                    {{ $saidiMaxValue = null }}
+                    {{ $saidihariantarget = null }}
+                    @for ($hari = 1; $hari <= $jml_hr; $hari++)
+                        @php $saidiHarianValue += $realisasi['harian_saidi'][$hari] @endphp
+                    @endfor
+                    @foreach ($ulp_target1 as $target1_ulp)
+                        @php $saidiTargetValue = ($target1_ulp->target1_ulp)/12 @endphp
+                    @endforeach
+                    @php
+                        $saidihariantarget = $saidiHarianValue / $saidiTargetValue - 2;
+                    @endphp
+                    @php $saidiMaxValue = abs((abs($saidihariantarget)+0.02)-4.00)*100 @endphp
+
 
                     chart: {
                         type: 'gauge',
@@ -506,11 +554,11 @@
                         plotBackgroundImage: null,
                         plotBorderWidth: 0,
                         plotShadow: false,
-                        height: '80%'
+                        height: '30%'
                     },
 
                     title: {
-                        text: 'Speedometer'
+                        text: 'Bulanan Saidi'
                     },
 
                     pane: {
@@ -525,44 +573,164 @@
                     yAxis: {
                         min: 0,
                         max: 200,
-                        tickPixelInterval: 72,
+                        tickPixelInterval: 0,
                         tickPosition: 'inside',
                         tickColor: Highcharts.defaultOptions.chart.backgroundColor || '#FFFFFF',
-                        tickLength: 20,
+                        tickLength: 25,
                         tickWidth: 2,
                         minorTickInterval: null,
                         labels: {
-                            distance: 20,
+                            distance: 40,
                             style: {
                                 fontSize: '14px'
                             }
                         },
                         plotBands: [{
                             from: 0,
-                            to: 120,
-                            color: '#55BF3B', // green
+                            to: 50,
+                            color: '#DF5353', // red
                             thickness: 20
                         }, {
-                            from: 120,
-                            to: 160,
+                            from: 50,
+                            to: 100,
                             color: '#DDDF0D', // yellow
                             thickness: 20
                         }, {
-                            from: 160,
-                            to: 200,
-                            color: '#DF5353', // red
+                            from: 100,
+                            to: 150,
+                            color: '#55BF3B', // green
                             thickness: 20
+
+                        }, {
+                            from: 150,
+                            to: 200,
+                            color: '#4F77AA', // blue
+                            thickness: 20
+
                         }]
                     },
 
                     series: [{
-                        name: 'Speed',
-                        data: [80],
+                        name: 'Bulanan Saidi',
+                        data: [
+
+                            @php echo round(abs(($saidiHarianValue/$saidiTargetValue)-2)*100,2)  @endphp
+                        ],
                         tooltip: {
-                            valueSuffix: ' km/h'
+                            valueSuffix: ' %'
                         },
                         dataLabels: {
-                            format: '{y} km/h',
+                            format: '{y} %',
+                            borderWidth: 0,
+                            color: (
+                                Highcharts.defaultOptions.title &&
+                                Highcharts.defaultOptions.title.style &&
+                                Highcharts.defaultOptions.title.style.color
+                            ) || '#333333',
+                            style: {
+                                fontSize: '16px'
+                            }
+                        },
+                        dial: {
+                            radius: '80%',
+                            backgroundColor: 'gray',
+                            baseWidth: 12,
+                            baseLength: '0%',
+                            rearLength: '0%'
+                        },
+                        pivot: {
+                            backgroundColor: 'gray',
+                            radius: 6
+                        }
+
+                    }],
+
+
+                });
+            </script>
+            <script>
+                Highcharts.chart('saidiKumgauge', {
+                    {{ $saidiKumulatifValue = null }}
+                    {{ $saidiTargetKumulatifValue = null }}
+                    {{ $saidiKumulatiMaxfValue = null }}
+                    @for ($hari = 1; $hari <= $jml_hr; $hari++)
+                        @php $saidiKumulatifValue += $realisasi['relekum_saidi'][$hari] @endphp
+                    @endfor
+                    @foreach ($ulp_target1 as $target2_ulp)
+                        @php $saidiTargetKumulatifValue = $target2_ulp->target2_ulp @endphp
+                    @endforeach
+
+                    @php $saidiKumulatiMaxfValue = ((abs(abs($saidiKumulatifValue/$saidiTargetKumulatifValue)-2)+0.02)-4) @endphp
+                    chart: {
+                        type: 'gauge',
+                        plotBackgroundColor: null,
+                        plotBackgroundImage: null,
+                        plotBorderWidth: 0,
+                        plotShadow: false,
+                        height: '30%'
+                    },
+
+                    title: {
+                        text: 'Kumulatif Saidi'
+                    },
+
+                    pane: {
+                        startAngle: -90,
+                        endAngle: 89.9,
+                        background: null,
+                        center: ['50%', '75%'],
+                        size: '110%'
+                    },
+
+                    // the value axis
+                    yAxis: {
+                        min: 0,
+                        max: 200,
+                        tickPixelInterval: 0,
+                        tickPosition: 'inside',
+                        tickColor: Highcharts.defaultOptions.chart.backgroundColor || '#FFFFFF',
+                        tickLength: 20,
+                        tickWidth: 2,
+                        minorTickInterval: null,
+                        labels: {
+                            distance: 40,
+                            style: {
+                                fontSize: '14px'
+                            }
+                        },
+                        plotBands: [{
+                            from: 0,
+                            to: 50,
+                            color: '#DF5353', // red
+                            thickness: 20
+                        }, {
+                            from: 50,
+                            to: 100,
+                            color: '#DDDF0D', // yellow
+                            thickness: 20
+                        }, {
+                            from: 100,
+                            to: 150,
+                            color: '#55BF3B', // green
+                            thickness: 20
+
+                        }, {
+                            from: 150,
+                            to: 200,
+                            color: '#4F77AA', // blue
+                            thickness: 20
+
+                        }]
+                    },
+
+                    series: [{
+                        name: 'Kumulatif Saidi',
+                        data: [@php echo round(abs(($saidiKumulatifValue/$saidiTargetKumulatifValue)-2),2) @endphp],
+                        tooltip: {
+                            valueSuffix: ' %'
+                        },
+                        dataLabels: {
+                            format: '{y} %',
                             borderWidth: 0,
                             color: (
                                 Highcharts.defaultOptions.title &&
@@ -588,23 +756,229 @@
                     }]
 
                 });
+            </script>
 
-                // Add some life
-                setInterval(() => {
-                    const chart = Highcharts.charts[0];
-                    if (chart && !chart.renderer.forExport) {
-                        const point = chart.series[0].points[0],
-                            inc = Math.round((Math.random() - 0.5) * 20);
+            {{-- Gauge Saifi --}}
+            <script>
+                Highcharts.chart('saifiBulgauge', {
+                    {{ $saifiHarianValue = null }}
+                    {{ $saifiTargetValue = null }}
+                    {{ $saifiMaxValue = null }}
+                    @for ($hari = 1; $hari <= $jml_hr; $hari++)
+                        @php $saifiHarianValue += $realisasi['harian_saifi'][$hari] @endphp
+                    @endfor
+                    @foreach ($ulp_target1 as $target2_ulp)
+                        @php $saifiTargetValue = ($target2_ulp->target2_ulp)/12 @endphp
+                    @endforeach
+                    @php $saifiMaxValue = abs((abs(abs(($saifiHarianValue/$saifiTargetValue)-2)+0.02)-4)*100) @endphp
 
-                        let newVal = point.y + inc;
-                        if (newVal < 0 || newVal > 200) {
-                            newVal = point.y - inc;
+
+                    chart: {
+                        type: 'gauge',
+                        plotBackgroundColor: null,
+                        plotBackgroundImage: null,
+                        plotBorderWidth: 0,
+                        plotShadow: false,
+                        height: '30%'
+                    },
+
+                    title: {
+                        text: 'Bulanan Saifi'
+                    },
+
+                    pane: {
+                        startAngle: -90,
+                        endAngle: 89.9,
+                        background: null,
+                        center: ['50%', '75%'],
+                        size: '110%'
+                    },
+
+                    // the value axis
+                    yAxis: {
+                        min: 0,
+                        max: 200,
+                        tickPixelInterval: 0,
+                        tickPosition: 'inside',
+                        tickColor: Highcharts.defaultOptions.chart.backgroundColor || '#FFFFFF',
+                        tickLength: 25,
+                        tickWidth: 2,
+                        minorTickInterval: null,
+                        labels: {
+                            distance: 40,
+                            style: {
+                                fontSize: '14px'
+                            }
+                        },
+                        plotBands: [{
+                            from: 0,
+                            to: 50,
+                            color: '#DF5353', // red
+                            thickness: 20
+                        }, {
+                            from: 50,
+                            to: 100,
+                            color: '#DDDF0D', // yellow
+                            thickness: 20
+                        }, {
+                            from: 100,
+                            to: 150,
+                            color: '#55BF3B', // green
+                            thickness: 20
+
+                        }, {
+                            from: 150,
+                            to: 200,
+                            color: '#4F77AA', // blue
+                            thickness: 20
+
+                        }]
+                    },
+
+                    series: [{
+                        name: 'Bulanan Saidi',
+                        data: [
+                            @php echo round(abs(($saifiTargetValue/$saifiHarianValue)-2)*100,2)  @endphp
+                        ],
+                        tooltip: {
+                            valueSuffix: ' %'
+                        },
+                        dataLabels: {
+                            format: '{y} %',
+                            borderWidth: 0,
+                            color: (
+                                Highcharts.defaultOptions.title &&
+                                Highcharts.defaultOptions.title.style &&
+                                Highcharts.defaultOptions.title.style.color
+                            ) || '#333333',
+                            style: {
+                                fontSize: '16px'
+                            }
+                        },
+                        dial: {
+                            radius: '80%',
+                            backgroundColor: 'gray',
+                            baseWidth: 12,
+                            baseLength: '0%',
+                            rearLength: '0%'
+                        },
+                        pivot: {
+                            backgroundColor: 'gray',
+                            radius: 6
                         }
 
-                        point.update(newVal);
-                    }
+                    }]
 
-                }, 3000);
+                });
+            </script>
+            
+            <script>
+                Highcharts.chart('saifiKumgauge', {
+                    {{ $saifiKumulatifValue = null }}
+                    {{ $saifiTargetKumulatifValue = null }}
+                    {{ $saifiKumulatiMaxfValue = null }}
+                    @for ($hari = 1; $hari <= $jml_hr; $hari++)
+                        @php $saifiKumulatifValue += $realisasi['relekum_saifi'][$hari] @endphp
+                    @endfor
+                    @foreach ($ulp_target1 as $target2_ulp)
+                        @php $saifiTargetKumulatifValue = $target2_ulp->target2_ulp @endphp
+                    @endforeach
+                    @php $saifiKumulatiMaxfValue = abs((abs(($saifiKumulatifValue/$saifiTargetKumulatifValue)-2)+0.02)-4) @endphp
+                    chart: {
+                        type: 'gauge',
+                        plotBackgroundColor: null,
+                        plotBackgroundImage: null,
+                        plotBorderWidth: 0,
+                        plotShadow: false,
+                        height: '30%'
+                    },
+
+                    title: {
+                        text: 'Kumulatif Saifi'
+                    },
+
+                    pane: {
+                        startAngle: -90,
+                        endAngle: 89.9,
+                        background: null,
+                        center: ['50%', '75%'],
+                        size: '110%'
+                    },
+
+                    // the value axis
+                    yAxis: {
+                        min: 0,
+                        max: 200,
+                        tickPixelInterval: 0,
+                        tickPosition: 'inside',
+                        tickColor: Highcharts.defaultOptions.chart.backgroundColor || '#FFFFFF',
+                        tickLength: 20,
+                        tickWidth: 2,
+                        minorTickInterval: null,
+                        labels: {
+                            distance: 40,
+                            style: {
+                                fontSize: '14px'
+                            }
+                        },
+                        plotBands: [{
+                            from: 0,
+                            to: 50,
+                            color: '#DF5353', // red
+                            thickness: 20
+                        }, {
+                            from: 50,
+                            to: 100,
+                            color: '#DDDF0D', // yellow
+                            thickness: 20
+                        }, {
+                            from: 100,
+                            to: 150,
+                            color: '#55BF3B', // green
+                            thickness: 20
+
+                        }, {
+                            from: 150,
+                            to: 200,
+                            color: '#4F77AA', // blue
+                            thickness: 20
+
+                        }]
+                    },
+
+                    series: [{
+                        name: 'Speed',
+                        data: [@php echo round((2-($saidiTargetKumulatifValue/$saidiKumulatifValue))*100,2) @endphp],
+                        tooltip: {
+                            valueSuffix: ' %'
+                        },
+                        dataLabels: {
+                            format: '{y} %',
+                            borderWidth: 0,
+                            color: (
+                                Highcharts.defaultOptions.title &&
+                                Highcharts.defaultOptions.title.style &&
+                                Highcharts.defaultOptions.title.style.color
+                            ) || '#333333',
+                            style: {
+                                fontSize: '16px'
+                            }
+                        },
+                        dial: {
+                            radius: '80%',
+                            backgroundColor: 'gray',
+                            baseWidth: 12,
+                            baseLength: '0%',
+                            rearLength: '0%'
+                        },
+                        pivot: {
+                            backgroundColor: 'gray',
+                            radius: 6
+                        }
+
+                    }]
+
+                });
             </script>
         @else
             <section class="section">
