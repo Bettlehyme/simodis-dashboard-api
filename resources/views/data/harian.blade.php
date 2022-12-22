@@ -13,8 +13,10 @@
     <div class="container">
         <div class="page-heading mt-4">
             <div class="text-center">
-                <h2>Dashboard Kehandalan UP3 Pekanbaru Tahun 2022</h2>
-                <h5>Monitoring Kinerja SAIDI SAIFI Harian UP3 Pekanbaru</h5>
+                <h2><img src="{{ asset('assets/images/logo/logo-simodis.png') }}" style="width: 20vh; height:5vh" /></h2>
+                {{-- <h2>Dashboard Kehandalan UP3 Pekanbaru Tahun 2022</h2> --}}
+                {{-- <h5>Monitoring Kinerja SAIDI SAIFI Harian UP3 Pekanbaru</h5> --}}
+                <h5>Sistem Monitoring Distribusi</h5>
             </div>
         </div>
 
@@ -74,7 +76,7 @@
                                                     if (isset($_GET['bulan'])) {
                                                         echo '<option value="' . htmlspecialchars($_GET['bulan']) . '" selected hidden>' . $month_name_selected . '</option>';
                                                     } else {
-                                                        echo '<option value=" " selected hidden disable>January</option>';
+                                                        echo '<option value="1" selected hidden disable>January</option>';
                                                     }
                                                     
                                                 @endphp
@@ -111,38 +113,14 @@
                                 <h4 class="card-title">Monitoring SAIDI Bulanan</h4>
                             </div> --}}
                             <div class="card-body">
-                                <figure class="highcharts-figure">
-                                    <div id="saidiBulgauge"></div>
-                                </figure>
-                                <figure class="highcharts-figure">
-                                    <div id="saidiKumgauge"></div>
-                                </figure>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <figure class="highcharts-figure">
-                                    <div id="saifiBulgauge"></div>
-                                </figure>
-                                <figure class="highcharts-figure">
-                                    <div id="saifiKumgauge"></div>
-                                </figure>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                {{-- ChartBar --}}
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
-                                {{-- <h4 class="card-title">Monitoring SAIDI Harian</h4> --}}
-                            </div>
-                            <div class="card-body">
+                                <div style="display:flex; flex-direction:row; z-index:999999; position: relative;">
+                                    <figure class="highcharts-figure">
+                                        <div id="saidiBulgauge"></div>
+                                    </figure>
+                                    <figure class="highcharts-figure">
+                                        <div id="saidiKumgauge"></div>
+                                    </figure>
+                                </div>
                                 <figure class="highcharts-figure">
                                     <div id="saidi"></div>
                                 </figure>
@@ -151,17 +129,27 @@
                     </div>
                     <div class="col-md-6">
                         <div class="card">
-                            <div class="card-header">
-                                {{-- <h4 class="card-title">Monitoring SAIFI Harian</h4> --}}
-                            </div>
                             <div class="card-body">
+                                <div style="display:flex; flex-direction:row; z-index:999999; position: relative;">
+
+                                    <figure class="highcharts-figure">
+                                        <div id="saifiBulgauge"></div>
+                                    </figure>
+                                    <figure class="highcharts-figure">
+                                        <div id="saifiKumgauge"></div>
+                                    </figure>
+                                </div>
+
                                 <figure class="highcharts-figure">
                                     <div id="saifi"></div>
                                 </figure>
                             </div>
                         </div>
                     </div>
+
                 </div>
+                {{-- ChartBar --}}
+
             </section>
             {{-- highcharts End --}}
 
@@ -554,11 +542,19 @@
                         plotBackgroundImage: null,
                         plotBorderWidth: 0,
                         plotShadow: false,
-                        height: '30%'
+                        height: '50%'
                     },
 
                     title: {
                         text: 'Bulanan Saidi'
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    navigation: {
+                        buttonOptions: {
+                            enabled: false
+                        }
                     },
 
                     pane: {
@@ -580,7 +576,7 @@
                         tickWidth: 2,
                         minorTickInterval: null,
                         labels: {
-                            distance: 40,
+                            distance: 30,
                             style: {
                                 fontSize: '14px'
                             }
@@ -628,7 +624,7 @@
                                 Highcharts.defaultOptions.title.style.color
                             ) || '#333333',
                             style: {
-                                fontSize: '16px'
+                                fontSize: '12px'
                             }
                         },
                         dial: {
@@ -667,13 +663,20 @@
                         plotBackgroundImage: null,
                         plotBorderWidth: 0,
                         plotShadow: false,
-                        height: '30%'
+                        height: '50%'
                     },
 
                     title: {
                         text: 'Kumulatif Saidi'
                     },
-
+                    credits: {
+                        enabled: false
+                    },
+                    navigation: {
+                        buttonOptions: {
+                            enabled: false
+                        }
+                    },
                     pane: {
                         startAngle: -90,
                         endAngle: 89.9,
@@ -693,7 +696,7 @@
                         tickWidth: 2,
                         minorTickInterval: null,
                         labels: {
-                            distance: 40,
+                            distance: 30,
                             style: {
                                 fontSize: '14px'
                             }
@@ -738,7 +741,7 @@
                                 Highcharts.defaultOptions.title.style.color
                             ) || '#333333',
                             style: {
-                                fontSize: '16px'
+                                fontSize: '12px'
                             }
                         },
                         dial: {
@@ -779,13 +782,20 @@
                         plotBackgroundImage: null,
                         plotBorderWidth: 0,
                         plotShadow: false,
-                        height: '30%'
+                        height: '50%'
                     },
 
                     title: {
                         text: 'Bulanan Saifi'
                     },
-
+                    credits: {
+                        enabled: false
+                    },
+                    navigation: {
+                        buttonOptions: {
+                            enabled: false
+                        }
+                    },
                     pane: {
                         startAngle: -90,
                         endAngle: 89.9,
@@ -805,7 +815,7 @@
                         tickWidth: 2,
                         minorTickInterval: null,
                         labels: {
-                            distance: 40,
+                            distance: 30,
                             style: {
                                 fontSize: '14px'
                             }
@@ -852,7 +862,7 @@
                                 Highcharts.defaultOptions.title.style.color
                             ) || '#333333',
                             style: {
-                                fontSize: '16px'
+                                fontSize: '12px'
                             }
                         },
                         dial: {
@@ -871,7 +881,7 @@
 
                 });
             </script>
-            
+
             <script>
                 Highcharts.chart('saifiKumgauge', {
                     {{ $saifiKumulatifValue = null }}
@@ -890,13 +900,20 @@
                         plotBackgroundImage: null,
                         plotBorderWidth: 0,
                         plotShadow: false,
-                        height: '30%'
+                        height: '50%'
                     },
 
                     title: {
                         text: 'Kumulatif Saifi'
                     },
-
+                    credits: {
+                        enabled: false
+                    },
+                    navigation: {
+                        buttonOptions: {
+                            enabled: false
+                        }
+                    },
                     pane: {
                         startAngle: -90,
                         endAngle: 89.9,
@@ -916,7 +933,7 @@
                         tickWidth: 2,
                         minorTickInterval: null,
                         labels: {
-                            distance: 40,
+                            distance: 30,
                             style: {
                                 fontSize: '14px'
                             }
@@ -961,7 +978,7 @@
                                 Highcharts.defaultOptions.title.style.color
                             ) || '#333333',
                             style: {
-                                fontSize: '16px'
+                                fontSize: '12px'
                             }
                         },
                         dial: {

@@ -45,14 +45,14 @@
 
                 <ul class="nav navbar-nav ms-4">
                     <li class="nav-item">
-                        <a class="nav-link " aria-current=" page" href="{{ url('/main/realisasi') }}">Realisasi</a>
+                        <a class="nav-link " aria-current=" page" href="{{ url('/main/realisasi') }}">SAIDI SAIFI</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/main/rank') }}">Rank</a>
+                        <a class="nav-link" href="{{ url('/main/rank') }}">Penyulang</a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link" href="{{ url('/main/raport') }}">Raport</a>
-                    </li>
+                    </li> --}}
                 </ul>
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 

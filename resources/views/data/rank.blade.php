@@ -26,8 +26,10 @@
         <div class="container">
             <div class="page-heading mt-4">
                 <div class="text-center">
-                    <h2>Dashboard Kehandalan UP3 Pekanbaru Tahun 2022</h2>
-                    <h5>Monitoring Kinerja SAIDI SAIFI Harian UP3 Pekanbaru</h5>
+                    <h2><img src="{{ asset('assets/images/logo/logo-simodis.png') }}" style="width: 20vh; height:5vh" /></h2>
+                    {{-- <h2>Dashboard Kehandalan UP3 Pekanbaru Tahun 2022</h2> --}}
+                    {{-- <h5>Monitoring Kinerja SAIDI SAIFI Harian UP3 Pekanbaru</h5> --}}
+                    <h5>Sistem Monitoring Distribusi</h5>
                 </div>
             </div>
             {{-- <a href="{{ url('/main/rank') }}" class="col-12 btn btn-outline-danger mt-3">Hapus Filter</a> --}}
@@ -113,7 +115,7 @@
                                         </select>
                                     </fieldset>
                                 </div>
-                                <div class="col-2 mt-4">
+                                <div class="col-2 mt-4" style="width:auto">
                                     <button class="btn btn-primary" type="submit">Refresh</button>
                                     <a class="btn btn-danger" href="{{ url('/main/rank') }}"> Reset </a>
                                 </div>
@@ -126,18 +128,40 @@
             <section class="section">
                 <div class="row">
                     <div class="col-md-3">
-                        <div class="card" style="padding: 0px">
-                            <form method="POST" action="{{ url('/main/rank') }}">
-                                @csrf
+                        <div class="card" style="padding: 0px;">
+                            <form method="GET" action="{{ url('/main/rank') }}">
+
                                 <div class="card-body">
                                     <label style="margin-bottom: 10px">ULP</label>
                                     <br>
 
-                                    @for ($i = 0; $i < count($ulp_list); $i++)
-                                        <button class="btn btn-primary" value="{{ $ulp_list[$i]->nama_ulp }}"
-                                            style="width:17vh; font-size:8pt; margin-bottom:5px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden">
-                                            {{ $ulp_list[$i]->nama_ulp }}
-                                        </button>
+                                    @for ($i = 0; $i < count($ulp_list + $up3_name); $i++)
+                                        <?php
+                                        
+                                        $btn_active = '';
+                                        $btn_active2 = '';
+                                        if (isset($_GET['ulp'])) {
+                                            if ($_GET['ulp'] == $up3_name[0]->nama_ulp) {
+                                                $btn_active2 = 'active';
+                                            } elseif ($_GET['ulp'] == $ulp_list[$i]->nama_ulp) {
+                                                $btn_active = 'active';
+                                            } else {
+                                                $btn_active = '';
+                                            }
+                                        }
+                                        ?>
+                                        <div class="tooltip">
+                                            <input type="submit" name="ulp"
+                                                class="btn btn-primary {{ $btn_active }}"
+                                                value="{{ $ulp_list[$i]->nama_ulp }}"
+                                                style="width:15vh; font-size:8pt; margin-bottom:5px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden" />
+
+                                            <div class="top">
+                                                {{ $ulp_list[$i]->nama_ulp }}
+                                                <i></i>
+                                            </div>
+                                        </div>
+
                                         @php
                                             if (($i + 1) / 2 == 0) {
                                                 echo '<br>';
@@ -147,33 +171,58 @@
                                         @endphp
                                     @endfor
 
-                                    <button class="btn btn-primary" value="{{ $up3_name[0]->nama_ulp }}"
-                                        style="width:17vh; font-size:8pt; margin-bottom:5px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden">
-                                        {{ $up3_name[0]->nama_ulp }}
-                                    </button>
+
                                     @php
                                         if (($i + 1) / 2 == 0) {
-                                                echo '<br>';
-                                            } else {
-                                                echo '';
-                                            }
+                                            echo '<br>';
+                                        } else {
+                                            echo '';
+                                        }
                                     @endphp
+
+                                    <?php
+                                    if (isset($_GET['bulan'])) {
+                                        echo '<input type="text" name="bulan" value="' . $_GET['bulan'] . '" hidden />';
+                                    } else {
+                                        echo '<input type="text" name="bulan" value="1" hidden />';
+                                    }
+                                    ?>
+
                                 </div>
                             </form>
-                            <form>
+                            <form method="GET" action="{{ url('/main/rank') }}">
 
                                 <div class="card-body">
                                     <label style="margin-bottom: 10px">Bulan</label>
                                     <br>
                                     @for ($i = 1; $i <= 12; $i++)
+                                        <?php
+                                        $btn_bulan_active = '';
+                                        if (isset($_GET['bulan'])) {
+                                            if ($_GET['bulan'] == $i) {
+                                                $btn_bulan_active = 'active';
+                                            } else {
+                                                $btn_bulan_active = '';
+                                            }
+                                        }
+                                        ?>
                                         @php
                                             $month_num = $i;
                                             $month_name = date('F', mktime(0, 0, 0, $month_num, 10));
                                         @endphp
-                                        <button class="btn btn-primary" value="{{ $i }}"
-                                            style="width:17vh; font-size:8pt; margin-bottom:5px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden">{{ $month_name }}</button>
+                                        <button type="submit" name="bulan"
+                                            class="btn btn-primary {{ $btn_bulan_active }}" value="{{ $i }}"
+                                            style="width:15vh; font-size:8pt; margin-bottom:5px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden">{{ $month_name }}</button>
                                     @endfor
                                 </div>
+                                <?php
+                                if (isset($_GET['ulp'])) {
+                                    echo '<input type="text" name="ulp" value="' . $_GET['ulp'] . '" hidden/> ';
+                                } else {
+                                    echo '<input type="text" name="ulp" value="' . $up3_name[0]->nama_ulp . '" hidden/> ';
+                                }
+                                ?>
+
                             </form>
                         </div>
                     </div>
@@ -269,6 +318,16 @@
                         pointPadding: 0.2,
                         borderWidth: 0,
                         color: '#009933'
+                    },
+                    series: {
+                        dataLabels: {
+                            enabled: true,
+                            align: 'center',
+                            color: '#000000',
+                            y: -10
+                        },
+                        pointPadding: 0.1,
+                        groupPadding: 0
                     }
                 },
                 series: [{
@@ -287,12 +346,25 @@
                 title: {
                     text: 'Komulatif Gangguan Bulanan'
                 },
+            
                 xAxis: {
                     categories: [
                         @foreach ($kum_gangguan as $value)
                             '{{ $value->rayon }}',
                         @endforeach
                     ]
+                },
+                plotOptions: {
+                    series: {
+                        dataLabels: {
+                            enabled: true,
+                            align: 'center',
+                            color: '#000000',
+                            y: -10
+                        },
+                        pointPadding: 0.1,
+                        groupPadding: 0
+                    }
                 },
                 series: [{
                     type: 'column',
@@ -386,6 +458,17 @@
                         pointPadding: 0.2,
                         borderWidth: 0,
                         color: '#ff4000'
+                    },
+                    series: {
+                        dataLabels: {
+                            enabled: true,
+                            align: 'center',
+                            color: '#000000',
+                            x: 0,
+                            y: -10
+                        },
+                        pointPadding: 0.1,
+                        groupPadding: 0
                     }
                 },
                 series: [{
@@ -443,6 +526,16 @@
                         pointPadding: 0.2,
                         borderWidth: 0,
                         color: '#000000'
+                    },
+                    series: {
+                        dataLabels: {
+                            enabled: true,
+                            align: 'center',
+                            color: '#000000',
+                            y: -10
+                        },
+                        pointPadding: 0.1,
+                        groupPadding: 0
                     }
                 },
                 series: [{

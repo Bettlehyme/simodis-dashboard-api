@@ -156,7 +156,7 @@
                                             <tr>
                                                 <td>{{ ++$no }}</td>
                                                 <td class="text-bold-700">{{ $row->ulp }}</td>
-                                                @foreach ($fgtm2 as $data)
+                                                @foreach ($fgtm3 as $data)
                                                         <td class="table-success">{{ $data->jml_gangguan }}</td>
                                                 @endforeach
                                             </tr>

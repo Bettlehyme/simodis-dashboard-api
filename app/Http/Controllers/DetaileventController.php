@@ -152,6 +152,9 @@ class DetaileventController extends Controller
 
         $fgtm = $dataRank['fgtm'];
         $fgtm2 = $dataRank['fgtm2'];
+        $fgtm3 = $dataRank['fgtm3'];
+
+
         $kum_gangguan = $dataRank['kum_gangguan'];
         $rank_saidi = $dataRank['rank_saidi'];
         $kum_penyulang = $dataRank['gg_penyulang'];
@@ -172,6 +175,7 @@ class DetaileventController extends Controller
                 'kum_gangguan',
                 'fgtm',
                 'fgtm2',
+                'fgtm3',
                 'n_gangguan',
                 'total_gangguan',
                 'tg_penyulang',
@@ -245,6 +249,8 @@ class DetaileventController extends Controller
 
         $fgtm = DB::select("SELECT month(tgl_padam) as bulan,COUNT(kategori+tipe_gangguan) as jml_gangguan FROM masterdata GROUP BY month(tgl_padam) ORDER BY month(tgl_padam) ASC");
         $fgtm2 = DB::select("SELECT ulp, month(tgl_padam) as bulan,COUNT(SAIDI) as jml_gangguan FROM detailevents GROUP BY ulp ORDER BY month(tgl_padam) ASC");
+        $fgtm3 = DB::select("SELECT month(tgl_padam) as bulan,COUNT(SAIDI) as jml_gangguan FROM detailevents GROUP BY month(tgl_padam) ORDER BY month(tgl_padam) ASC");
+
 
 
         $kum_gangguan = "";
@@ -351,6 +357,7 @@ class DetaileventController extends Controller
 
         $rank['fgtm'] = $fgtm;
         $rank['fgtm2'] = $fgtm2;
+        $rank['fgtm3'] = $fgtm3;
         $rank['kum_gangguan'] = $kum_gangguan;
         $rank['rank_saidi'] = $rank_saidi;
         $rank['gg_penyulang'] = $kum_penyulang;
