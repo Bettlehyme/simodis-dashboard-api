@@ -3,15 +3,16 @@
 @section('content')
 
     @php
-    // dd($harian);
-    $jml_hr = cal_days_in_month(CAL_GREGORIAN, $harian['bulan'], 2021); //jumlah hari perbulan
-
-    $saidi = $harian['saidi_harian'];
-    $saifi = $harian['saifi_harian'];
-
-    setlocale(LC_ALL, 'id_ID');
-
+        // dd($harian);
+        $jml_hr = cal_days_in_month(CAL_GREGORIAN, $harian['bulan'], 2021); //jumlah hari perbulan
+        
+        $saidi = $harian['saidi_harian'];
+        $saifi = $harian['saifi_harian'];
+        
+        setlocale(LC_ALL, 'id_ID');
+        
     @endphp
+    <link rel="stylesheet" href="{{ asset('assets/css/flickity.min.css') }}">
 
     <div class="page-heading">
         <h3>Dashboard</h3>
@@ -34,8 +35,168 @@
         </div>
     @else
         <div class="page-content">
+
             <section class="row">
                 <div class="col-12">
+
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="col-12">
+                                    <div class="viewcontainer">
+                                        <div style="border-radius: 2em;">
+                                            <div class="gallery js-flickity" data-flickity='{ "autoPlay": 2500 }'>
+                                                @foreach ($images as $c)
+                                                    <div class="gallery-cell" style="border-radius: 2em"><img id="imglogo"
+                                                            src="{{ asset('assets/images/bg/' . $c->image . '') }}"
+                                                            style="width:100%;" />
+                                                    </div>
+                                                @endforeach
+
+                                            </div>
+                                        </div>
+                                        <div class="viewedit">
+
+                                        </div>
+                                        <div style="display: flex; flex-direction:row">
+                                            <?php $s = 0; ?>
+                                            @foreach ($images as $slide)
+                                                <?php $s++; ?>
+                                                <div class="viewimage">
+                                                    <div class="containerview">
+                                                        <img src="{{ asset('assets/images/bg/' . $slide->image . '') }}"
+                                                            alt="{{ asset('assets/images/logo/logo-pln.png') }}" class="image" style="width:100%">
+                                                        <div class="middle">
+                                                            <a href="/dash/delphoto/{{ $slide->id }}"
+                                                                style="color: red; font-size: 14px">Delete Photo</a>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <button class="btn btn-primary" id="btnkecil" style="width:100%"
+                                                            type="button" data-bs-toggle="modal"
+                                                            data-bs-target="#inlineForm<?php echo $s; ?>">
+                                                            Change Photo
+                                                        </button>
+
+
+                                                        <!--login form Modal -->
+                                                        <div class="modal fade text-left" id="inlineForm<?php echo $s; ?>"
+                                                            tabindex="-1" aria-labelledby="myModalLabel<?php echo $s; ?>"
+                                                            style="display: none; " aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+                                                                role="document">
+                                                                <div class="modal-content">
+                                                                    
+                                                                        <div class="modal-header">
+                                                                            <h4 class="modal-title">
+                                                                                Change Photo
+                                                                            </h4>
+                                                                            <button type="button" class="close"
+                                                                                data-bs-dismiss="modal" aria-label="Close">
+                                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                    width="24" height="24"
+                                                                                    viewBox="0 0 24 24" fill="none"
+                                                                                    stroke="currentColor" stroke-width="2"
+                                                                                    stroke-linecap="round"
+                                                                                    stroke-linejoin="round"
+                                                                                    class="feather feather-x">
+                                                                                    <line x1="18" y1="6"
+                                                                                        x2="6" y2="18">
+                                                                                    </line>
+                                                                                    <line x1="6" y1="6"
+                                                                                        x2="18" y2="18">
+                                                                                    </line>
+                                                                                </svg>
+                                                                            </button>
+                                                                        </div>
+                                                                        <form action="/dash/editphoto" method="POST" enctype="multipart/form-data">
+                                                                            @csrf
+                                                                        <div class="modal-body">
+                                                                            <input class="form-control" type="file"
+                                                                                id="formFile" name="file">
+
+                                                                        </div>
+                                                                        <input type="text" name="idgambar"
+                                                                            value="{{ $slide->id }}" hidden />
+                                                                        <div class="modal-footer">
+                                                                        
+                                                                            <button type="submit"
+                                                                                class="btn btn-primary ml-1"
+                                                                                >
+                                                                                <i
+                                                                                    class="bx bx-check d-block d-sm-none"></i>
+                                                                                <span
+                                                                                    class="d-none d-sm-block">Change</span>
+                                                                            </button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0px">
+                                            <button class="btn btn-primary" style="" type="button"
+                                                data-bs-toggle="modal" data-bs-target="#inlineForm99">
+                                                Add Photo
+                                            </button>
+
+
+                                            <!--login form Modal -->
+                                            <div class="modal fade text-left" id="inlineForm99" tabindex="-1"
+                                                aria-labelledby="myModalLabel99" style="display: none;"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+                                                    role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title" id="myModalLabel99">
+                                                                Add Photo
+                                                            </h4>
+                                                            <button type="button" class="close" data-bs-dismiss="modal"
+                                                                aria-label="Close">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                    height="24" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                                    class="feather feather-x">
+                                                                    <line x1="18" y1="6" x2="6"
+                                                                        y2="18"></line>
+                                                                    <line x1="6" y1="6" x2="18"
+                                                                        y2="18"></line>
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                        <form action="dash/addphoto" method="post"
+                                                            enctype="multipart/form-data">
+                                                            @csrf
+                                                            <div class="modal-body">
+                                                                <input class="form-control" type="file" id="file"
+                                                                    name="file" />
+
+                                                            </div>
+                                                            <div class="modal-footer">
+
+                                                                <button type="submit" class="btn btn-primary ml-1">
+                                                                    <i class="bx bx-check d-block d-sm-none"></i>
+                                                                    <span class="d-none d-sm-block">Add</span>
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
@@ -230,7 +391,6 @@
                     }
                 }]
             });
-
         </script>
         <script>
             Highcharts.chart('saifi', {
@@ -344,8 +504,7 @@
                     }
                 }]
             });
-
         </script>
-
+        <script src="{{ asset('assets/js/flickity.pkgd.min.js') }}"></script>
     @endif
 @endsection

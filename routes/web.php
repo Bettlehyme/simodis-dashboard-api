@@ -55,6 +55,11 @@ Route::prefix('/user')->name('user.')->group(function () {
 
 // Route::get('/dash',  [DetaileventController::class, 'index']);
 Route::match(['get', 'post'], '/dash',  [DetaileventController::class, 'index'])->name('dashboard')->middleware('auth');
+Route::post('/dash/addphoto', [DetaileventController::class, 'addPhoto']);
+Route::post('/dash/editphoto', [DetaileventController::class, 'editPhoto']);
+
+Route::get('/dash/delphoto/{id}', [DetaileventController::class, 'delPhoto']);
+
 Route::prefix('/main')->group(function () {
     
     Route::match(['get', 'post'], '/realisasi',  [DetaileventController::class, 'chartHarian']);

@@ -2,6 +2,7 @@
 
 @section('content')
 
+    <link rel="stylesheet" href="{{ asset('assets/css/flickity.min.css') }}">
     @php
         $jml_hr = cal_days_in_month(CAL_GREGORIAN, $harian['bulan'], 2021); //jumlah hari perbulan
         
@@ -9,8 +10,23 @@
         $saifi = $harian['saifi_harian'];
         
     @endphp
-
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; border-radius:2em; overflow:hidden">
+        <div class="main-top-page">
+            <div class="imgcontainer" style="margin-top: 30px; margin-left:30px ">
+                <img class="imglogo" src="{{ asset('assets/images/logo/logo-bumn.png') }}" />
+                <img class="imglogo" src="{{ asset('assets/images/logo/logo-pln.png') }}" style="margin-top:2%; left:13%" />
+            </div>
+            <div class="gallery js-flickity" data-flickity='{ "autoPlay": 2500 }'>
+                @foreach ($images as $c)
+                    <div class="gallery-cell" style="border-radius: 2em"><img id="imglogo"
+                            src="{{ asset('assets/images/bg/' . $c->image . '') }}" style="width:100%;" />
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
     <div class="container">
+
         <div class="page-heading mt-4">
             <div class="text-center">
                 <h2><img src="{{ asset('assets/images/logo/logo-simodis.png') }}" style="width: 20vh; height:5vh" /></h2>
@@ -105,6 +121,7 @@
                 </div>
             </section>
 
+
             <section class="section">
                 <div class="row">
                     <div class="col-md-6">
@@ -113,13 +130,18 @@
                                 <h4 class="card-title">Monitoring SAIDI Bulanan</h4>
                             </div> --}}
                             <div class="card-body">
-                                <div style="display:flex; flex-direction:row; z-index:999999; position: relative;">
-                                    <figure class="highcharts-figure">
-                                        <div id="saidiBulgauge"></div>
-                                    </figure>
-                                    <figure class="highcharts-figure">
-                                        <div id="saidiKumgauge"></div>
-                                    </figure>
+                                <div
+                                    style="display:flex; width:100%; flex-wrap:nowrap; flex-direction:row; z-index:999999; position: relative;">
+                                    <div class="gauge-container">
+                                        <figure class="highcharts-figure">
+                                            <div id="saidiBulgauge"></div>
+                                        </figure>
+                                    </div>
+                                    <div class="gauge-container">
+                                        <figure class="highcharts-figure">
+                                            <div id="saidiKumgauge"></div>
+                                        </figure>
+                                    </div>
                                 </div>
                                 <figure class="highcharts-figure">
                                     <div id="saidi"></div>
@@ -131,13 +153,16 @@
                         <div class="card">
                             <div class="card-body">
                                 <div style="display:flex; flex-direction:row; z-index:999999; position: relative;">
-
-                                    <figure class="highcharts-figure">
-                                        <div id="saifiBulgauge"></div>
-                                    </figure>
-                                    <figure class="highcharts-figure">
-                                        <div id="saifiKumgauge"></div>
-                                    </figure>
+                                    <div class="gauge-container">
+                                        <figure class="highcharts-figure">
+                                            <div id="saifiBulgauge"></div>
+                                        </figure>
+                                    </div>
+                                    <div class="gauge-container">
+                                        <figure class="highcharts-figure">
+                                            <div id="saifiKumgauge"></div>
+                                        </figure>
+                                    </div>
                                 </div>
 
                                 <figure class="highcharts-figure">
@@ -542,7 +567,8 @@
                         plotBackgroundImage: null,
                         plotBorderWidth: 0,
                         plotShadow: false,
-                        height: '50%'
+                        height: '50%',
+                        zoomType: 'xy',
                     },
 
                     title: {
@@ -964,7 +990,7 @@
                     },
 
                     series: [{
-                        name: 'Speed',
+                        name: 'Kumulatif Saifi',
                         data: [@php echo round((2-($saidiTargetKumulatifValue/$saidiKumulatifValue))*100,2) @endphp],
                         tooltip: {
                             valueSuffix: ' %'
@@ -997,6 +1023,7 @@
 
                 });
             </script>
+            <script src="{{ asset('assets/js/flickity.pkgd.min.js') }}"></script>
         @else
             <section class="section">
                 <div class="row">

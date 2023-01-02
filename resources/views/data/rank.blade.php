@@ -1,7 +1,9 @@
 @extends('navbar.dash')
 
 @section('content')
+    <div>
 
+    </div>
     @php
         
         $jml_hr = cal_days_in_month(CAL_GREGORIAN, $harian['bulan'], 2021); //jumlah hari perbulan
@@ -24,9 +26,18 @@
         </div>
     @else
         <div class="container">
+
             <div class="page-heading mt-4">
+
+                <div class="imgcontainer" >
+                    <img class="imglogo" src="{{ asset('assets/images/logo/logo-bumn.png') }}" />
+                    <img class="imglogo" src="{{ asset('assets/images/logo/logo-pln.png') }}"
+                        style="margin-top:2%; left:13%" />
+                </div>
+
                 <div class="text-center">
-                    <h2><img src="{{ asset('assets/images/logo/logo-simodis.png') }}" style="width: 20vh; height:5vh" /></h2>
+                    <h2><img src="{{ asset('assets/images/logo/logo-simodis.png') }}" style="width: 20vh; height:5vh" />
+                    </h2>
                     {{-- <h2>Dashboard Kehandalan UP3 Pekanbaru Tahun 2022</h2> --}}
                     {{-- <h5>Monitoring Kinerja SAIDI SAIFI Harian UP3 Pekanbaru</h5> --}}
                     <h5>Sistem Monitoring Distribusi</h5>
@@ -133,61 +144,53 @@
 
                                 <div class="card-body">
                                     <label style="margin-bottom: 10px">ULP</label>
-                                    <br>
+                                    <div class="kolum">
 
-                                    @for ($i = 0; $i < count($ulp_list + $up3_name); $i++)
-                                        <?php
-                                        
-                                        $btn_active = '';
-                                        $btn_active2 = '';
-                                        if (isset($_GET['ulp'])) {
-                                            if ($_GET['ulp'] == $up3_name[0]->nama_ulp) {
-                                                $btn_active2 = 'active';
-                                            } elseif ($_GET['ulp'] == $ulp_list[$i]->nama_ulp) {
-                                                $btn_active = 'active';
-                                            } else {
-                                                $btn_active = '';
+                                        @for ($i = 0; $i < count($ulp_list + $up3_name); $i++)
+                                            <?php
+                                            
+                                            $btn_active = '';
+                                            $btn_active2 = '';
+                                            if (isset($_GET['ulp'])) {
+                                                if ($_GET['ulp'] == $up3_name[0]->nama_ulp) {
+                                                    $btn_active2 = 'active';
+                                                } elseif ($_GET['ulp'] == $ulp_list[$i]->nama_ulp) {
+                                                    $btn_active = 'active';
+                                                } else {
+                                                    $btn_active = '';
+                                                }
                                             }
+                                            ?>
+                                            <div class="tooltip">
+
+                                                <div class="btn btn-primary {{ $btn_active }}" id="btnParent">
+                                                    <input class="btntransparent" type="submit" name="ulp"
+                                                        value="{{ $ulp_list[$i]->nama_ulp }}"/>
+                                                       
+                                                </div>
+                                                <div class="top">
+                                                    {{ $ulp_list[$i]->nama_ulp }}
+                                                    <i></i>
+                                                </div>
+                                            </div>
+
+                                            {{-- @php
+                                                if (($i) / 2 == 0) {
+                                                    echo '<div> </div>';
+                                                } else {
+                                                    echo '';
+                                                }
+                                            @endphp --}}
+                                        @endfor
+
+                                        <?php
+                                        if (isset($_GET['bulan'])) {
+                                            echo '<input type="text" name="bulan" value="' . $_GET['bulan'] . '" hidden />';
+                                        } else {
+                                            echo '<input type="text" name="bulan" value="1" hidden />';
                                         }
                                         ?>
-                                        <div class="tooltip">
-                                            <input type="submit" name="ulp"
-                                                class="btn btn-primary {{ $btn_active }}"
-                                                value="{{ $ulp_list[$i]->nama_ulp }}"
-                                                style="width:15vh; font-size:8pt; margin-bottom:5px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden" />
-
-                                            <div class="top">
-                                                {{ $ulp_list[$i]->nama_ulp }}
-                                                <i></i>
-                                            </div>
-                                        </div>
-
-                                        @php
-                                            if (($i + 1) / 2 == 0) {
-                                                echo '<br>';
-                                            } else {
-                                                echo '';
-                                            }
-                                        @endphp
-                                    @endfor
-
-
-                                    @php
-                                        if (($i + 1) / 2 == 0) {
-                                            echo '<br>';
-                                        } else {
-                                            echo '';
-                                        }
-                                    @endphp
-
-                                    <?php
-                                    if (isset($_GET['bulan'])) {
-                                        echo '<input type="text" name="bulan" value="' . $_GET['bulan'] . '" hidden />';
-                                    } else {
-                                        echo '<input type="text" name="bulan" value="1" hidden />';
-                                    }
-                                    ?>
-
+                                    </div>
                                 </div>
                             </form>
                             <form method="GET" action="{{ url('/main/rank') }}">
@@ -195,25 +198,32 @@
                                 <div class="card-body">
                                     <label style="margin-bottom: 10px">Bulan</label>
                                     <br>
-                                    @for ($i = 1; $i <= 12; $i++)
-                                        <?php
-                                        $btn_bulan_active = '';
-                                        if (isset($_GET['bulan'])) {
-                                            if ($_GET['bulan'] == $i) {
-                                                $btn_bulan_active = 'active';
-                                            } else {
-                                                $btn_bulan_active = '';
+                                    <div class="kolum">
+                                        @for ($i = 1; $i <= 12; $i++)
+                                            <?php
+                                            $btn_bulan_active = '';
+                                            if (isset($_GET['bulan'])) {
+                                                if ($_GET['bulan'] == $i) {
+                                                    $btn_bulan_active = 'active';
+                                                } else {
+                                                    $btn_bulan_active = '';
+                                                }
                                             }
-                                        }
-                                        ?>
-                                        @php
-                                            $month_num = $i;
-                                            $month_name = date('F', mktime(0, 0, 0, $month_num, 10));
-                                        @endphp
-                                        <button type="submit" name="bulan"
-                                            class="btn btn-primary {{ $btn_bulan_active }}" value="{{ $i }}"
-                                            style="width:15vh; font-size:8pt; margin-bottom:5px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden">{{ $month_name }}</button>
-                                    @endfor
+                                            ?>
+                                            @php
+                                                $month_num = $i;
+                                                $month_name = date('F', mktime(0, 0, 0, $month_num, 10));
+                                            @endphp
+                                            <div style="tooltip">
+                                                <div class="btn btn-primary {{ $btn_bulan_active }}" id="btnParent">
+                                                    <button class="btntransparent" type="submit" name="bulan"
+                                                        value="{{ $i }}">
+                                                        {{ $month_name }}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        @endfor
+                                    </div>
                                 </div>
                                 <?php
                                 if (isset($_GET['ulp'])) {
@@ -346,7 +356,7 @@
                 title: {
                     text: 'Komulatif Gangguan Bulanan'
                 },
-            
+
                 xAxis: {
                     categories: [
                         @foreach ($kum_gangguan as $value)

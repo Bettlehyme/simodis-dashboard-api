@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
 
+
     <!-- highcharts JS -->
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/highcharts-more.js"></script>
@@ -31,6 +32,7 @@
 </head>
 
 <body>
+  
     <nav class="navbar navbar-expand navbar-light ">
         <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
@@ -41,8 +43,10 @@
 
             <div class="collapse navbar-collapse" id="navbar">
                 <a href="{{ url()->previous() }}"><i class="bi bi-chevron-left"></i></a>
-                <a class="navbar-brand ms-4 text-gray-800" href="#" style="font-size: 2rem; margin-top:-10px; "><img src="{{asset('assets/images/logo/logo-simodis.png')}}"  style="width: 20vh; height:5vh" /></a>
-
+                <a class="navbar-brand ms-4 text-gray-800" href="#"
+                    style="font-size: 2rem; margin-top:-10px; "><img
+                        src="{{ asset('assets/images/logo/logo-simodis.png') }}" style="width: 20vh; height:5vh" /></a>
+                <div> </div>
                 <ul class="nav navbar-nav ms-4">
                     <li class="nav-item">
                         <a class="nav-link " aria-current=" page" href="{{ url('/main/realisasi') }}">SAIDI SAIFI</a>
@@ -124,7 +128,6 @@
                                 </li>
                             </ul>
                         </div>
-
                     @else
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url('/auth/login') }}"><i
@@ -152,10 +155,10 @@
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
-
     </script>
     <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
+
 </body>
 
 </html>

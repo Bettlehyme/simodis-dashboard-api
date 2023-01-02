@@ -61,6 +61,9 @@ class DetaileventController extends Controller
 
     public function index(Request $request)
     {
+
+        $images = DB::table('imgcarousel')->get();
+
         $filter = $request->all();
 
         if ($filter) {
@@ -87,11 +90,59 @@ class DetaileventController extends Controller
             ->where('id', 1)
             ->exists();
 
-        return view('index', compact('target', 'harian', 'ulp_list', 'up3_name', 'realisasi', 'nama_ulp', 'ulp_exists'));
+        return view('index', compact('target', 'harian', 'ulp_list', 'up3_name', 'realisasi', 'nama_ulp', 'ulp_exists', 'images'));
+    }
+
+    public function addPhoto(Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'required|mimes:JPEG,jpeg,jpg,png'
+        ]);
+
+        // menangkap file foto
+        $file = $request->file('file');
+
+        // membuat nama file unik
+        $namafile = rand() . $file->getClientOriginalName();
+
+        // upload ke folder file_images/bg didalam folder public
+        $file->move('assets/images/bg/', $namafile);
+        DB::table('imgcarousel')->insert(['image'=>$namafile]);
+
+        return back();
+    }
+
+    public function editPhoto(Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'required|mimes:JPEG,jpeg,jpg,png'
+        ]);
+
+        // menangkap file foto
+        $file = $request->file('file');
+
+        // membuat nama file unik
+        $namafile = rand() . $file->getClientOriginalName();
+
+        // upload ke folder file_images/bg didalam folder public
+        $file->move('assets/images/bg/', $namafile);
+        DB::table('imgcarousel')
+              ->where('id', $request->idgambar)
+              ->update(['image' => $namafile]);
+
+        return back();
+    }
+
+    public function delPhoto($id)
+    {
+        DB::table('imgcarousel')->where('id', $id)->delete();
+
+        return back();
     }
 
     public function chartHarian(Request $request)
     {
+        $images = DB::table('imgcarousel')->get();
         $filter = $request->all();
         if ($filter) {
             $request->validate([
@@ -129,7 +180,7 @@ class DetaileventController extends Controller
             ->where('nama_ulp', $ulp_nama_filter)
             ->get();
 
-        return view('data.harian', compact('harian', 'ulp_list', 'up3_name', 'target', 'realisasi', 'nama_ulp', 'ulp_exists','ulp_target1'));
+        return view('data.harian', compact('harian', 'ulp_list', 'up3_name', 'target', 'realisasi', 'nama_ulp', 'ulp_exists','ulp_target1', 'images'));
     }
 
     public function showPotret(Request $request)
